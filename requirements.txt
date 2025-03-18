@@ -1,0 +1,11 @@
+streamlit>=1.31.0
+langchain-experimental>=0.0.1
+langchain-text-splitters>=0.0.1
+langchain-core>=0.1.0
+langchain-qdrant>=0.1.0
+qdrant-client>=1.7.0
+sentence-transformers>=2.2.2
+langgraph>=0.0.1
+langchain-ollama>=0.0.1
+PyPDF2>=3.0.1 
+ollama>=0.1.0
