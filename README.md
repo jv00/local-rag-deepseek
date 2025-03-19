@@ -28,21 +28,6 @@ This project implements a **Retrieval-Augmented Generation (RAG)** system runnin
 - **Python**: Version 3.8+ for the Streamlit app.
 - **Git**: Optional, for cloning the repository.
 
-## Project Structure
-
-local-rag-deepseek/
-├── docker-compose.yml    # Docker configuration for Qdrant and Ollama
-├── main.py              # Streamlit frontend
-├── src/
-│   ├── graph.py         # LangGraph workflow
-│   ├── prompts.py       # Prompt templates
-│   ├── state.py         # State definition for LangGraph
-│   ├── utils.py         # Utility functions (PDF parsing, Ollama calls)
-│   ├── vector_db.py     # Qdrant vector store integration
-├── requirements.txt     # Python dependencies
-└── README.md            # This file
-
-
 ## Services (Docker Compose)
 
 The `docker-compose.yml` defines two services:
@@ -76,3 +61,17 @@ The `docker-compose.yml` defines two services:
 ```bash
 git clone https://github.com/yourusername/local-rag-deepseek.git
 cd local-rag-deepseek
+
+- set up a Python virtual environment to isolate dependencies:
+
+```bash
+python -m venv venv
+
+```bash
+pip install -r requirements.txt
+
+```bash
+docker-compose up -d
+
+```bash
+streamlit run main.py
