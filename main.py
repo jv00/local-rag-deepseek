@@ -8,8 +8,7 @@ APP_TITLE = "DeepSeek R1"
 ALLOWED_FILE_TYPES = ["pdf"]
 LAYOUT_CONFIG = {"page_title": "DeepSeek Local", "layout": "wide"}
 
-
-def generate_response(user_input: str) -> str:
+def generate_response(user_input: str) -> Dict[str, str]:
     """Generate AI response based on user input with thread persistence."""
     initial_state = {
         "question": user_input,
@@ -18,9 +17,9 @@ def generate_response(user_input: str) -> str:
     thread_id = st.session_state.get("thread_id", "default_thread")
     response = graph.invoke(
         initial_state,
-        config={"configurable": {"thread_id": thread_id}}  # Nest configurable inside config
+        config={"configurable": {"thread_id": thread_id}}
     )
-    return response["answer"]
+    return response["answer"]  # Returns dict with 'reasoning' and 'response'
 
 class ChatState:
     """Manages session state initialization and updates"""
@@ -38,6 +37,11 @@ class ChatState:
         for key, value in defaults.items():
             if key not in st.session_state:
                 st.session_state[key] = value
+
+    @staticmethod
+    def clear_messages():
+        """Clear chat messages"""
+        st.session_state.messages = []
 
 def render_header() -> None:
     """Render the application header and controls"""
@@ -85,10 +89,17 @@ def process_uploaded_files(selected_files: List) -> None:
                     )
 
 def display_chat_history() -> None:
-    """Display chat message history"""
+    """Display chat message history with reasoning and response separated."""
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.write(message["content"])
+            if message["role"] == "user":
+                st.write(message["content"])
+            else:  # Assistant message
+                content = message["content"]  # This is a dict with reasoning/response
+                st.write("#### Reasoning:")
+                st.write(content.get("reasoning", "No reasoning provided"))
+                st.write("#### Response:")
+                st.write(content.get("response", "No response generated"))
 
 def handle_user_input() -> None:
     """Handle user input and display responses"""
@@ -102,17 +113,17 @@ def handle_user_input() -> None:
         assistant_response = generate_response(user_input)
         st.session_state.messages.append({
             "role": "assistant",
-            "content": assistant_response
+            "content": assistant_response  # Store the full dict
         })
 
         with st.chat_message("assistant"):
             st.write("#### Reasoning:")
-            st.write(assistant_response.get('reasoning', 'No reasoning provided'))
-            
+            st.write(assistant_response.get("reasoning", "No reasoning provided"))
             st.write("#### Response:")
-            st.write(assistant_response.get('response', 'No response generated'))
+            st.write(assistant_response.get("response", "No response generated"))
 
-def main():
+def main() -> None:
+    """Main application function"""
     st.set_page_config(**LAYOUT_CONFIG)
     ChatState.initialize()
     
