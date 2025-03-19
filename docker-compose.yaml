@@ -1,0 +1,25 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: always
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: always
+    entrypoint: /bin/sh
+    command: -c "ollama serve & sleep 5 && ollama pull deepseek-r1:1.5b && wait"
+
+volumes:
+  qdrant_data:
+  ollama_data:
