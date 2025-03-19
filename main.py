@@ -1,39 +1,43 @@
 import streamlit as st
 from typing import List, Dict, Optional
-from utils import upload_files_to_db
-from graph import graph
+from src.utils import upload_files_to_db
+from src.graph import graph
 
 # Constants
 APP_TITLE = "DeepSeek R1"
 ALLOWED_FILE_TYPES = ["pdf"]
 LAYOUT_CONFIG = {"page_title": "DeepSeek Local", "layout": "wide"}
 
+
+def generate_response(user_input: str) -> str:
+    """Generate AI response based on user input with thread persistence."""
+    initial_state = {
+        "question": user_input,
+    }
+    # Use thread_id from session state
+    thread_id = st.session_state.get("thread_id", "default_thread")
+    response = graph.invoke(
+        initial_state,
+        config={"configurable": {"thread_id": thread_id}}  # Nest configurable inside config
+    )
+    return response["answer"]
+
 class ChatState:
     """Manages session state initialization and updates"""
     
     @staticmethod
     def initialize():
-        """Initialize session state variables if they don't exist"""
+        """Initialize session state variables if they don’t exist"""
         defaults = {
             "selected_files_ready": False,
             "files_upload_complete": False,
             "messages": [],
-            "uploader_key": 0
+            "uploader_key": 0,
+            "thread_id": "default_thread"  # Persistent thread ID
         }
         for key, value in defaults.items():
             if key not in st.session_state:
                 st.session_state[key] = value
-
-    @staticmethod
-    def clear_messages():
-        """Clear chat messages"""
-        st.session_state.messages = []
-
-def generate_response(user_input: str) -> Dict[str, str]:
-    """Generate AI response based on user input"""
-    initial_state = {"question": user_input}
-    response = graph.invoke(initial_state)
-    return response["answer"]
 
 def render_header() -> None:
     """Render the application header and controls"""
@@ -108,8 +112,7 @@ def handle_user_input() -> None:
             st.write("#### Response:")
             st.write(assistant_response.get('response', 'No response generated'))
 
-def main() -> None:
-    """Main application function"""
+def main():
     st.set_page_config(**LAYOUT_CONFIG)
     ChatState.initialize()
     

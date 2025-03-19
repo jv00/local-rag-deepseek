@@ -8,4 +8,8 @@
 
 `.\venv\Scripts\activate`
 
+- install dependancies
+
+`pip install -r requirements.txt`
+
 Run docker-compose.yaml

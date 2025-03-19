@@ -2,10 +2,11 @@ from typing import List
 from langchain_core.documents import Document
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from embeddings import MiniLMEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct, Distance, VectorParams
+
+from src.embeddings import MiniLMEmbeddings
 
 # Configuration constants
 DB_CONFIG = {
