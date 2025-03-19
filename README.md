@@ -62,16 +62,10 @@ The `docker-compose.yml` defines two services:
 git clone https://github.com/yourusername/local-rag-deepseek.git
 cd local-rag-deepseek
 
-- set up a Python virtual environment to isolate dependencies:
-
-```bash
 python -m venv venv
 
-```bash
 pip install -r requirements.txt
 
-```bash
 docker-compose up -d
 
-```bash
 streamlit run main.py
